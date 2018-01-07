@@ -5,6 +5,8 @@ using UnityEngine;
 public class BlocksManager : MonoBehaviour {
 
 	public static BlocksManager instance;
+	public float inputDelay;
+	private float timeSinceLastInput;
 
 	void Awake ()
 	{
@@ -24,20 +26,28 @@ public class BlocksManager : MonoBehaviour {
 	
 
 	void Update () {
+		if (timeSinceLastInput > 0)
+		{
+			timeSinceLastInput -= Time.deltaTime;
+			return;
+		}
 		if (Input.GetKeyDown(KeyCode.UpArrow))
 		{
+			timeSinceLastInput = inputDelay;
 			for (int x = 0; x < grid.GetLength(0); x++)
 			{
 				MoveUp(x);
 			}
 		} else if (Input.GetKeyDown(KeyCode.DownArrow))
 		{
+			timeSinceLastInput = inputDelay;
 			for (int x = 0; x < grid.GetLength(0); x++)
 			{
 				MoveDown(x);
 			}
 		} else if (Input.GetKeyDown(KeyCode.RightArrow))
 		{
+			timeSinceLastInput = inputDelay;
 			for (int y = 0; y < grid.GetLength(1); y++)
 			{
 				MoveRight(y);
@@ -45,6 +55,7 @@ public class BlocksManager : MonoBehaviour {
 		}
 		else if (Input.GetKeyDown(KeyCode.LeftArrow))
 		{
+			timeSinceLastInput = inputDelay;
 			for (int y = 0; y < grid.GetLength(1); y++)
 			{
 				MoveLeft(y);
@@ -87,9 +98,7 @@ public class BlocksManager : MonoBehaviour {
 		}
 		if (grid[x, y + yDirection] == null)
 		{
-			grid[x, y].Move(new Vector2(x, y + yDirection));
-			grid[x, y + yDirection] = grid[x, y];
-			grid[x, y] = null;
+			ActuateMove(x, x, y, y + yDirection);
 			MoveYRecursive(yDirection, minY, maxY, x, y + yDirection);
 		}
 	}
@@ -128,12 +137,16 @@ public class BlocksManager : MonoBehaviour {
 		}
 		if (grid[x + xDirection, y] == null)
 		{
-			grid[x, y].Move(new Vector2(x + xDirection, y));
-			grid[x + xDirection, y] = grid[x, y];
-			grid[x, y] = null;
+			
+			ActuateMove(x, x + xDirection, y, y);
 			MoveXRecursive(xDirection, minX, maxX, x + xDirection, y);
 		}
 	}
 
-
+	private void ActuateMove(int xFrom, int xTo, int yFrom, int yTo)
+	{
+		grid[xFrom, yFrom].Move(new Vector2(xTo, yTo));
+		grid[xTo, yTo] = grid[xFrom, yFrom];
+		grid[xFrom, yFrom] = null;
+	}
 }
