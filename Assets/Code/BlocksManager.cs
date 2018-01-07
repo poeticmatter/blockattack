@@ -101,6 +101,10 @@ public class BlocksManager : MonoBehaviour {
 			ActuateMove(x, x, y, y + yDirection);
 			MoveYRecursive(yDirection, minY, maxY, x, y + yDirection);
 		}
+		else if (grid[x, y].value > 0)
+		{
+			MergeMoveIfPossible(x, x, y, y + yDirection);
+		}
 	}
 
 	private void MoveRight(int y)
@@ -140,6 +144,9 @@ public class BlocksManager : MonoBehaviour {
 			
 			ActuateMove(x, x + xDirection, y, y);
 			MoveXRecursive(xDirection, minX, maxX, x + xDirection, y);
+		} else if (grid[x,y].value > 0)
+		{
+			MergeMoveIfPossible(x, x + xDirection, y, y);
 		}
 	}
 
@@ -148,5 +155,15 @@ public class BlocksManager : MonoBehaviour {
 		grid[xFrom, yFrom].Move(new Vector2(xTo, yTo));
 		grid[xTo, yTo] = grid[xFrom, yFrom];
 		grid[xFrom, yFrom] = null;
+	}
+
+	private void MergeMoveIfPossible(int xFrom, int xTo, int yFrom, int yTo)
+	{
+		if (grid[xFrom, yFrom].value == grid[xTo, yTo].value)
+		{
+			grid[xTo, yTo].value += grid[xFrom, yFrom].value;
+			grid[xFrom, yFrom].Move(new Vector2(xTo, yTo));
+			grid[xFrom, yFrom].destruct = true;
+		}
 	}
 }
