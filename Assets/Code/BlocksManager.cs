@@ -18,7 +18,7 @@ public class BlocksManager : MonoBehaviour {
 	private const int SPAWN_MODE = 1;
 	private const int GAME_OVER = 2;
 	private int mode = 0;
-	private int turnCounter = 100;
+	private int turnCounter = 1;
 	public Text turnText;
 	public Text gameOverText;
 
