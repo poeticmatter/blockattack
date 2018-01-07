@@ -28,7 +28,6 @@ public class Block : MonoBehaviour {
 	public bool destruct = false;
 
 	void Start () {
-		BlocksManager.instance.grid[(int)destination.x, (int)destination.y] = this;
 		value = value;
 	}
 	
@@ -37,8 +36,9 @@ public class Block : MonoBehaviour {
 		transform.position = Vector2.SmoothDamp(transform.position, destination, ref velocity, smoothTime, maxVelocity, Time.deltaTime);
 		if (destruct && (((Vector2)transform.position) - destination).magnitude < 0.1)
 		{
-			Destroy(gameObject);
+			SendMessage("Destroying");
 		}
+		
 	}
 
 	public void Move(Vector2 destination)
