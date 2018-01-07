@@ -7,6 +7,7 @@ public class BlocksManager : MonoBehaviour {
 	public static BlocksManager instance;
 	public float inputDelay;
 	private float timeSinceLastInput;
+	public Block center;
 
 	void Awake ()
 	{
@@ -21,7 +22,16 @@ public class BlocksManager : MonoBehaviour {
 
 
 	void Start () {
-		
+		RegisterCenter();
+	}
+
+	private void RegisterCenter ()
+	{
+
+		grid[3, 3] = center;
+		grid[3, 4] = center;
+		grid[4, 3] = center;
+		grid[4, 4] = center;
 	}
 	
 
@@ -101,7 +111,7 @@ public class BlocksManager : MonoBehaviour {
 			ActuateMove(x, x, y, y + yDirection);
 			MoveYRecursive(yDirection, minY, maxY, x, y + yDirection);
 		}
-		else if (grid[x, y].value > 0)
+		else
 		{
 			MergeMoveIfPossible(x, x, y, y + yDirection);
 		}
@@ -144,7 +154,7 @@ public class BlocksManager : MonoBehaviour {
 			
 			ActuateMove(x, x + xDirection, y, y);
 			MoveXRecursive(xDirection, minX, maxX, x + xDirection, y);
-		} else if (grid[x,y].value > 0)
+		} else
 		{
 			MergeMoveIfPossible(x, x + xDirection, y, y);
 		}
@@ -159,8 +169,9 @@ public class BlocksManager : MonoBehaviour {
 
 	private void MergeMoveIfPossible(int xFrom, int xTo, int yFrom, int yTo)
 	{
-		if (grid[xFrom, yFrom].value == grid[xTo, yTo].value)
+		if (grid[xFrom, yFrom].value < 0 || grid[xFrom, yFrom].value == grid[xTo, yTo].value)
 		{
+
 			grid[xTo, yTo].value += grid[xFrom, yFrom].value;
 			grid[xFrom, yFrom].Move(new Vector2(xTo, yTo));
 			grid[xFrom, yFrom].destruct = true;
